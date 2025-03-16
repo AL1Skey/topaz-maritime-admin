@@ -194,7 +194,7 @@ const confirmStatusChange = async () => {
         />
 
         <div class="panel mt-6">
-            <div class="flex items-center justify-between mb-5">
+            <!-- <div class="flex items-center justify-between mb-5">
                 <h5 class="text-lg font-semibold dark:text-white-light">
                     Job Applications for {{ jobCategory?.name }}
                 </h5>
@@ -218,7 +218,7 @@ const confirmStatusChange = async () => {
                         Detailed Excel
                     </button>
                 </div>
-            </div>
+            </div> -->
 
             <div class="datatable invoice-table">
                 <div class="mb-4.5 flex flex-col justify-end gap-5 px-5 md:flex-row md:items-center">
