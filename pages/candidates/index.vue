@@ -5,6 +5,7 @@ import { useAppStore } from '@/stores/index';
 import { useJobCategoryStore } from '@/stores/jobCategory';
 import { useJobApplicationStore } from '@/stores/jobApplication';
 import { refDebounced } from '@vueuse/core';
+import * as XLSX from 'xlsx';
 
 useHead({ title: 'Job Category Details' });
 
@@ -32,6 +33,14 @@ const {
     deleteJobApplication,
     openModalDelete,
 } = jobApplicationStore
+
+// Add state for candidate details modal
+const isModalCandidateDetailsActive = ref(false)
+const selectedCandidate = ref(null)
+
+// Add state for accept/reject confirmation modal
+const isModalStatusChangeActive = ref(false)
+const statusChangeType = ref('') // 'accept' or 'reject'
 
 // Add function to fetch all job categories
 const fetchAllJobCategories = async () => {
@@ -73,6 +82,7 @@ const jobApplicationCols = ref([
     { field: 'email', title: 'Email' },
     { field: 'phone', title: 'Phone' },
     { field: 'job', title: 'Job' },
+    { field: 'status', title: 'Status' }, // Added status column
     { field: 'actions', title: 'Actions', sort: false, headerClass: 'justify-center' },
 ]) || [];
 
@@ -98,6 +108,72 @@ const changeServer = async (data) => {
 const confirmDelete = async () => {
     await deleteJobApplication(jobApplication.value?.id)
     await fetchJobApplicationsByJobCategoryId(selectedCategoryId.value, jobApplicationParams)
+}
+
+// Function to download job applications as Excel
+const downloadExcel = () => {
+    // Create worksheet from job applications data
+    const worksheet = XLSX.utils.json_to_sheet(jobApplications.value.map(app => ({
+        ID: app.id,
+        Name: app.name,
+        Email: app.email,
+        Phone: app.phone,
+        Job: app.job_vacancy.title,
+        Status: app.status || 'Pending'
+    })));
+    
+    // Create workbook and add the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Job Applications');
+    
+    // Generate Excel file and trigger download
+    XLSX.writeFile(workbook, `${jobCategory.value.name}_Applications.xlsx`);
+}
+
+// Function to open candidate details modal
+const openCandidateDetails = (candidate) => {
+    selectedCandidate.value = candidate;
+    isModalCandidateDetailsActive.value = true;
+}
+
+// Functions to handle recruitment status changes
+const openStatusChangeModal = (candidate, type) => {
+    selectedCandidate.value = candidate;
+    statusChangeType.value = type; // 'accept' or 'reject'
+    isModalStatusChangeActive.value = true;
+}
+
+const confirmStatusChange = async () => {
+    try {
+        appStore.loadingStart();
+        
+        // Assuming you have an API endpoint to update application status
+        // You'll need to implement this function in your jobApplicationStore
+        await jobApplicationStore.updateApplicationStatus(
+            selectedCandidate.value.id, 
+            statusChangeType.value === 'accept' ? 'Accepted' : 'Rejected'
+        );
+        
+        // Refresh the data
+        await fetchJobApplicationsByJobCategoryId(selectedCategoryId.value, jobApplicationParams);
+        
+        // Close the modal
+        isModalStatusChangeActive.value = false;
+        
+        // Show success message
+        appStore.showMessage({
+            type: 'success',
+            message: `Candidate ${statusChangeType.value === 'accept' ? 'accepted' : 'rejected'} successfully`
+        });
+    } catch (error) {
+        console.error('Error updating status:', error);
+        appStore.showMessage({
+            type: 'error',
+            message: `Failed to update status: ${error.message}`
+        });
+    } finally {
+        appStore.loadingEnd();
+    }
 }
 </script>
 
@@ -146,6 +222,16 @@ const confirmDelete = async () => {
                     <div class="mr-auto">
                         <input v-model="jobApplicatioSearch" type="text" class="form-input" placeholder="Search..." />
                     </div>
+                    <!-- Add Excel download button -->
+                    <button 
+                        type="button" 
+                        class="btn btn-success"
+                        @click="downloadExcel"
+                        :disabled="!jobApplications || jobApplications.length === 0"
+                    >
+                        <icon-download class="mr-2" />
+                        Download Excel
+                    </button>
                 </div>
 
                 <vue3-datatable
@@ -176,10 +262,50 @@ const confirmDelete = async () => {
                     <template #job="data">
                         <div class="font-semibold">{{ data.value.job_vacancy.title }}</div>
                     </template>
+                    <template #status="data">
+                        <div class="flex items-center justify-center">
+                            <span 
+                                class="badge whitespace-nowrap" 
+                                :class="{
+                                    'badge-outline-success': data.value.status === 'Accepted',
+                                    'badge-outline-danger': data.value.status === 'Rejected',
+                                    'badge-outline-warning': !data.value.status || data.value.status === 'Pending'
+                                }"
+                            >
+                                {{ data.value.status || 'Pending' }}
+                            </span>
+                        </div>
+                    </template>
                     <template #actions="data">
-                        <div class="flex items-center justify-center gap-4">
-                            <button type="button" class="hover:text-danger" @click="openModalDelete(data.value)">
-                                <icon-trash-lines />
+                        <div class="flex items-center justify-center gap-2">
+                            <!-- View details button -->
+                            <button type="button" class="btn btn-sm btn-info p-1" @click="openCandidateDetails(data.value)">
+                                <icon-eye class="h-4 w-4" />
+                            </button>
+                            
+                            <!-- Accept button -->
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-success p-1" 
+                                @click="openStatusChangeModal(data.value, 'accept')"
+                                :disabled="data.value.status === 'Accepted'"
+                            >
+                                <icon-check class="h-4 w-4" />
+                            </button>
+                            
+                            <!-- Reject button -->
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-danger p-1" 
+                                @click="openStatusChangeModal(data.value, 'reject')"
+                                :disabled="data.value.status === 'Rejected'"
+                            >
+                                <icon-x class="h-4 w-4" />
+                            </button>
+                            
+                            <!-- Delete button -->
+                            <button type="button" class="btn btn-sm btn-danger p-1" @click="openModalDelete(data.value)">
+                                <icon-trash-lines class="h-4 w-4" />
                             </button>
                         </div>
                     </template>
@@ -187,7 +313,7 @@ const confirmDelete = async () => {
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Delete Modal -->
         <client-only>
             <ModalDelete
                 v-model="isModalDeleteActive"
@@ -198,6 +324,281 @@ const confirmDelete = async () => {
                 <p>Job application: <span class="font-bold">{{ jobApplication?.name }}</span></p>
                 <p>Are you sure you want to permanently delete this job application?</p>
             </ModalDelete>
+        </client-only>
+
+        <!-- Status Change Modal -->
+        <client-only>
+            <ModalDelete
+                v-model="isModalStatusChangeActive"
+                :title="statusChangeType === 'accept' ? 'Accept Candidate' : 'Reject Candidate'"
+                :confirmLabel="statusChangeType === 'accept' ? 'Accept' : 'Reject'"
+                :confirmButtonClass="statusChangeType === 'accept' ? 'btn-success' : 'btn-danger'"
+                @confirm="confirmStatusChange"
+            >
+                <p>Candidate: <span class="font-bold">{{ selectedCandidate?.name }}</span></p>
+                <p>Are you sure you want to {{ statusChangeType === 'accept' ? 'accept' : 'reject' }} this candidate?</p>
+            </ModalDelete>
+        </client-only>
+
+        <!-- Candidate Details Modal -->
+        <client-only>
+            <Modal
+                v-model="isModalCandidateDetailsActive"
+                title="Candidate Details"
+                size="xl"
+            >
+                <div v-if="selectedCandidate" class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Personal Information -->
+                        <div class="panel">
+                            <h6 class="mb-4 text-base font-semibold">Personal Information</h6>
+                            <div class="space-y-3">
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Name:</span>
+                                    <span>{{ selectedCandidate.name }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Birth Place:</span>
+                                    <span>{{ selectedCandidate.birthPlace }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Birth Date:</span>
+                                    <span>{{ new Date(selectedCandidate.birthDate).toLocaleDateString() }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Gender:</span>
+                                    <span>{{ selectedCandidate.sex ? 'Male' : 'Female' }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Marital Status:</span>
+                                    <span>{{ selectedCandidate.maritalStatusId }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Children:</span>
+                                    <span>{{ selectedCandidate.numberOfChild }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Religion:</span>
+                                    <span>{{ selectedCandidate.religionId }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Blood Type:</span>
+                                    <span>{{ selectedCandidate.bloodType }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Nationality:</span>
+                                    <span>{{ selectedCandidate.nationalityId }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="panel">
+                            <h6 class="mb-4 text-base font-semibold">Contact Information</h6>
+                            <div class="space-y-3">
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Address:</span>
+                                    <span>{{ selectedCandidate.address }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">City:</span>
+                                    <span>{{ selectedCandidate.city }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Zip Code:</span>
+                                    <span>{{ selectedCandidate.zipCode }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Country:</span>
+                                    <span>{{ selectedCandidate.countryId }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Phone:</span>
+                                    <span>{{ selectedCandidate.phoneNo }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Mobile:</span>
+                                    <span>{{ selectedCandidate.handPhone }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Email:</span>
+                                    <span>{{ selectedCandidate.email }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certificate Information -->
+                        <div class="panel">
+                            <h6 class="mb-4 text-base font-semibold">Certificate Information</h6>
+                            <div class="space-y-3">
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Certificate ID:</span>
+                                    <span>{{ selectedCandidate.certificateId }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Certificate No:</span>
+                                    <span>{{ selectedCandidate.certificateNo }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Status:</span>
+                                    <span>{{ selectedCandidate.certificateStatusId }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Issued By:</span>
+                                    <span>{{ selectedCandidate.certificateIssued }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Issue Date:</span>
+                                    <span>{{ new Date(selectedCandidate.certificateIssuedDate).toLocaleDateString() }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Expiry Date:</span>
+                                    <span>{{ new Date(selectedCandidate.certificateExpiryDate).toLocaleDateString() }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Physical Information -->
+                        <div class="panel">
+                            <h6 class="mb-4 text-base font-semibold">Physical Information</h6>
+                            <div class="space-y-3">
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Height:</span>
+                                    <span>{{ selectedCandidate.height }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Weight:</span>
+                                    <span>{{ selectedCandidate.weight }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">White Shirt:</span>
+                                    <span>{{ selectedCandidate.whiteShirt }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Blue Pants:</span>
+                                    <span>{{ selectedCandidate.bluePants }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Overall:</span>
+                                    <span>{{ selectedCandidate.overall }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Safety Shoes:</span>
+                                    <span>{{ selectedCandidate.safetyShoes }}</span>
+                                </div>
+                                <div class="flex">
+                                    <span class="w-1/3 font-semibold">Winter Jacket:</span>
+                                    <span>{{ selectedCandidate.winterJacket }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="panel mt-6">
+                        <h6 class="mb-4 text-base font-semibold">Documents</h6>
+                        <div class="overflow-x-auto">
+                            <table class="w-full table-auto">
+                                <thead>
+                                    <tr>
+                                        <th class="border p-2">Document ID</th>
+                                        <th class="border p-2">Document No</th>
+                                        <th class="border p-2">Issued By</th>
+                                        <th class="border p-2">Valid Date</th>
+                                        <th class="border p-2">Expiry Date</th>
+                                        <th class="border p-2">Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(doc, index) in selectedCandidate.documents" :key="index">
+                                        <td class="border p-2">{{ doc.docId }}</td>
+                                        <td class="border p-2">{{ doc.docNo }}</td>
+                                        <td class="border p-2">{{ doc.issued }}</td>
+                                        <td class="border p-2">{{ new Date(doc.validDate).toLocaleDateString() }}</td>
+                                        <td class="border p-2">{{ new Date(doc.expiredDate).toLocaleDateString() }}</td>
+                                        <td class="border p-2">{{ doc.remark }}</td>
+                                    </tr>
+                                    <tr v-if="!selectedCandidate.documents || selectedCandidate.documents.length === 0">
+                                        <td colspan="6" class="border p-2 text-center">No documents available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Trainings -->
+                    <div class="panel mt-6">
+                        <h6 class="mb-4 text-base font-semibold">Trainings</h6>
+                        <div class="overflow-x-auto">
+                            <table class="w-full table-auto">
+                                <thead>
+                                    <tr>
+                                        <th class="border p-2">Training ID</th>
+                                        <th class="border p-2">Reference ID</th>
+                                        <th class="border p-2">Certificate No</th>
+                                        <th class="border p-2">Valid Date</th>
+                                        <th class="border p-2">Expiry Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(training, index) in selectedCandidate.trainings" :key="index">
+                                        <td class="border p-2">{{ training.trainingId }}</td>
+                                        <td class="border p-2">{{ training.referenceId }}</td>
+                                        <td class="border p-2">{{ training.certificateNo }}</td>
+                                        <td class="border p-2">{{ new Date(training.validDate).toLocaleDateString() }}</td>
+                                        <td class="border p-2">{{ new Date(training.expiredDate).toLocaleDateString() }}</td>
+                                    </tr>
+                                    <tr v-if="!selectedCandidate.trainings || selectedCandidate.trainings.length === 0">
+                                        <td colspan="5" class="border p-2 text-center">No trainings available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Experiences -->
+                    <div class="panel mt-6">
+                        <h6 class="mb-4 text-base font-semibold">Work Experience</h6>
+                        <div class="overflow-x-auto">
+                            <table class="w-full table-auto">
+                                <thead>
+                                    <tr>
+                                        <th class="border p-2">Vessel</th>
+                                        <th class="border p-2">Vessel Type</th>
+                                        <th class="border p-2">Flag</th>
+                                        <th class="border p-2">Trading Area</th>
+                                        <th class="border p-2">Rank</th>
+                                        <th class="border p-2">DWT</th>
+                                        <th class="border p-2">KWH</th>
+                                        <th class="border p-2">Owner</th>
+                                        <th class="border p-2">Sign On</th>
+                                        <th class="border p-2">Sign Off</th>
+                                        <th class="border p-2">Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(exp, index) in selectedCandidate.experiences" :key="index">
+                                        <td class="border p-2">{{ exp.vessel }}</td>
+                                        <td class="border p-2">{{ exp.vesselType }}</td>
+                                        <td class="border p-2">{{ exp.flag }}</td>
+                                        <td class="border p-2">{{ exp.tradingAreaId }}</td>
+                                        <td class="border p-2">{{ exp.rank }}</td>
+                                        <td class="border p-2">{{ exp.dwt }}</td>
+                                        <td class="border p-2">{{ exp.kwh }}</td>
+                                        <td class="border p-2">{{ exp.owner }}</td>
+                                        <td class="border p-2">{{ new Date(exp.signOn).toLocaleDateString() }}</td>
+                                        <td class="border p-2">{{ new Date(exp.signOff).toLocaleDateString() }}</td>
+                                        <td class="border p-2">{{ exp.signOffReason }}</td>
+                                    </tr>
+                                    <tr v-if="!selectedCandidate.experiences || selectedCandidate.experiences.length === 0">
+                                        <td colspan="11" class="border p-2 text-center">No experience available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </client-only>
     </SectionMain>
 </template>
