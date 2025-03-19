@@ -26,7 +26,7 @@ onMounted(async () => {
 });
 
 const cols = ref([
-    { field: 'id', title: 'ID', isUnique: true },
+    // { field: 'id', title: 'ID', isUnique: true },
     { field: 'name', title: 'Company' },
     { field: 'actions', title: 'Actions', sort: false, headerClass: 'justify-center' },
 ]) || [];

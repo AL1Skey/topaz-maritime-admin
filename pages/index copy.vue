@@ -310,6 +310,90 @@
             </div>
         </div> -->
 
-      
+        <div class="panel mt-5">
+            <!-- <h5 class="mb-5 px-5 text-lg font-semibold dark:text-white-light">Job Application By Job Category</h5> -->
+
+            <div class="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
+                <h5 class="text-lg font-semibold dark:text-white-light">Latest Job Application By Job Category: {{ selectedJobCategory.name }}</h5>
+                <div class="ltr:ml-auto rtl:mr-auto">
+                    <!-- <NuxtLink :to="`/admins/${route.params.id}/edit`" class="hover:text-info">
+                        <icon-edit class="w-5 h-5" />
+                    </NuxtLink> -->
+                    <div class="flex flex-col sm:flex-row">
+                        <!-- <label for="job_category_id" class="mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Job Category</label> -->
+                        <div class="flex-grow">
+                            <div class="">
+                                <client-only>
+                                    <multiselect
+                                        v-model="selectedJobCategory"
+                                        :options="jobCategories"
+                                        track-by="id"
+                                        label="name"
+                                        class="custom-multiselect"
+                                        :searchable="false"
+                                        :preselect-first="true"
+                                        :allow-empty="false"
+                                        selected-label=""
+                                        select-label=""
+                                        deselect-label=""
+                                    ></multiselect>
+                                </client-only>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="datatable invoice-table">
+                <!-- <div class="mb-4.5 flex flex-col justify-end gap-5 px-5 md:flex-row md:items-center">
+                    <div class="mr-auto">
+                        <input v-model="jobApplicatioSearch" type="text" class="form-input" placeholder="Search..." />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <NuxtLink to="/job-categories/create" class="btn btn-primary gap-2">
+                            Create Job Application
+                        </NuxtLink>
+                    </div>
+                </div> -->
+
+                <!-- :rows="jobApplications"
+                    :columns="jobApplicationCols"
+                    :loading="jobApplicationStore.loading"
+                    :totalRows="jobApplicationsMeta?.total"
+                    :isServerMode="true"
+                    :sortable="false"
+                    :pagination="true"
+                    :search="jobApplicationParams.search"
+                    :pageSizeOptions="[10, 20, 30]"
+                    @change="changeServer" -->
+                <vue3-datatable
+                    :rows="jobApplications"
+                    :columns="jobApplicationCols"
+                    :loading="jobApplicationStore.loading"
+                    :totalRows="jobApplications.length"
+                    :isServerMode="true"
+                    :sortable="false"
+                    :pagination="false"
+                    :pageSizeOptions="[10, 20, 30]"
+                    skin="whitespace-nowrap bh-table-hover"
+                >
+                    <template #id="data">
+                        <strong class="text-info">#{{ data.value.id }}</strong>
+                    </template>
+                    <template #name="data">
+                        <div class="font-semibold">{{ data.value.name }}</div>
+                    </template>
+                    <!-- <template #email="data">
+                        <div class="font-semibold">{{ data.value.email }}</div>
+                    </template>
+                    <template #phone="data">
+                        <div class="font-semibold">{{ data.value.phone }}</div>
+                    </template> -->
+                    <template #job="data">
+                        <div class="font-semibold">{{ data.value.job_vacancy.title }}</div>
+                    </template>
+                </vue3-datatable>
+            </div>
+        </div>
     </SectionMain>
 </template>

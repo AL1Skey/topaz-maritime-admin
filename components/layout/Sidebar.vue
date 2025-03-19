@@ -106,7 +106,7 @@ const toggleMobileMenu = () => {
                                     </div>
                                 </NuxtLink>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <NuxtLink to="/job-categories" class="group" @click="toggleMobileMenu">
                                     <div class="flex items-center">
                                         <icon-menu-datatables class="shrink-0 group-hover:!text-primary" />
@@ -115,7 +115,7 @@ const toggleMobileMenu = () => {
                                         }}</span>
                                     </div>
                                 </NuxtLink>
-                            </li>
+                            </li> -->
 
                             <!-- <icon-menu-datatables class="shrink-0 group-hover:!text-primary" />
                             <icon-menu-pages class="shrink-0 group-hover:!text-primary" />

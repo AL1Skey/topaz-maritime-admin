@@ -38,6 +38,8 @@ export const useJobApplicationStore = defineStore('jobApplication', () => {
         loadingEnd()
     }
 
+    
+
     const createJobApplication = async (formData: object) => {
         loadingStart()
         try {
@@ -99,6 +101,22 @@ export const useJobApplicationStore = defineStore('jobApplication', () => {
         loadingEnd()
     }
 
+    const fetchJobApplicationsByAllJobCategoryId = async (params?: object) => {
+        loadingStart()
+        try {
+            const data = await JobApplicationService.getJobApplicationsByAllJobCategoryId(params) as Data
+            jobApplications.value = data.data
+            console.log("🚀 | fetchJobApplications | data:", data)
+            console.log("🚀 | fetchJobApplications | data:", data.meta)
+            
+            jobApplicationsMeta.value = data.meta
+            resetError()
+        } catch ({ _data }: any) {
+            setError(_data)
+        }
+        loadingEnd()
+    }
+
     const jobApplicationsCount = ref(0)
     const getJobApplicationsCurrentMonthCount = async () => {
         loadingStart()
@@ -139,7 +157,7 @@ export const useJobApplicationStore = defineStore('jobApplication', () => {
     }
 
     return {
-        jobApplications, jobApplicationsMeta, jobApplication,
+        jobApplications, jobApplicationsMeta, jobApplication,fetchJobApplicationsByAllJobCategoryId,
         fetchJobApplications, fetchJobApplication, createJobApplication, updateJobApplication, deleteJobApplication,
         fetchJobApplicationsByJobCategoryId,
         jobApplicationsCount, getJobApplicationsCurrentMonthCount,

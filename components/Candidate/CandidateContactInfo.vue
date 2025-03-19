@@ -13,7 +13,7 @@ defineProps({
         <div class="space-y-3">
             <div class="flex">
                 <span class="w-1/3 font-semibold">Address:</span>
-                <span>{{ candidate.address }}</span>
+                <span class="whitespace-pre-line">{{ candidate.address }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">City:</span>

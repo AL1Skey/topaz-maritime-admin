@@ -29,7 +29,7 @@ onMounted(async () => {
 });
 
 const cols = ref([
-    { field: 'id', title: 'ID', isUnique: true },
+    // { field: 'id', title: 'ID', isUnique: true },
     { field: 'name', title: 'Category' },
     { field: 'job_applications_count', title: 'Job Applications Count' },
     { field: 'actions', title: 'Actions', sort: false, headerClass: 'justify-center' },

@@ -70,7 +70,7 @@ const deleteApplication = (application) => {
             <div class="font-semibold">{{ data.value.phone }}</div>
         </template>
         <template #job="data">
-            <div class="font-semibold">{{ data.value.job_vacancy.title }}</div>
+            <div class="font-semibold">{{ data.value?.job_vacancy?.title || 'N/A' }}</div>
         </template>
         <template #status="data">
             <div class="flex items-center justify-center">
@@ -100,18 +100,18 @@ const deleteApplication = (application) => {
                     @click="changeStatus(data.value, 'accept')"
                     :disabled="data.value.status === 'Accepted'"
                 >
-                    <icon-check class="h-4 w-4" />
+                    <icon-checks class="h-4 w-4" />
                 </button>
                 
                 <!-- Reject button -->
-                <button 
+                <!-- <button 
                     type="button" 
                     class="btn btn-sm btn-danger p-1" 
                     @click="changeStatus(data.value, 'reject')"
                     :disabled="data.value.status === 'Rejected'"
                 >
                     <icon-x class="h-4 w-4" />
-                </button>
+                </button> -->
                 
                 <!-- Delete button -->
                 <button type="button" class="btn btn-sm btn-danger p-1" @click="deleteApplication(data.value)">

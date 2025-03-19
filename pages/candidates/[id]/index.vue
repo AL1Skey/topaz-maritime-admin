@@ -18,7 +18,7 @@ onMounted(async () => {
     appStore.loadingStart();
     try {
         // Fetch candidate details
-        await jobApplicationStore.fetchJobApplication(route.params.id);
+        const data = await jobApplicationStore.fetchJobApplication(route.params.id);
         candidate.value = jobApplication.value;
     } catch (error) {
         console.error('Error fetching candidate details:', error);
@@ -124,12 +124,16 @@ const updateStatus = async (status) => {
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <CandidateContactInfo :candidate="candidate" />
-                <CandidateCertificateInfo :candidate="candidate" />
+                <CandidateNextOfKin :candidate="candidate" />
                 <CandidatePhysicalInfo :candidate="candidate" />
+                <CandidateCertificateInfo :candidate="candidate" />
             </div>
 
-            <CandidateDocuments :documents="candidate.documents" />
-            <CandidateTrainings :trainings="candidate.trainings" />
+            <CandidateDocumentsInfo :candidate="candidate" />
+            <CandidateTrainings 
+                :standard-trainings="candidate.standardTrainings" 
+                :stcw-trainings="candidate.stcwTrainings" 
+            />
             <CandidateExperiences :experiences="candidate.experiences" />
         </template>
 

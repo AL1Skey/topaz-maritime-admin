@@ -79,6 +79,22 @@ defineProps({
                         <span class="w-1/3 font-semibold">Apply Date:</span>
                         <span>{{ new Date(candidate.rankApplyDate).toLocaleDateString() }}</span>
                     </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Manning Agent:</span>
+                        <span>{{ candidate.manningAgent || '-' }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Elementary:</span>
+                        <span>{{ candidate.isElementary ? 'Yes' : 'No' }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Rank:</span>
+                        <span>{{ candidate.rank }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">COC Type:</span>
+                        <span>{{ candidate.cocType }}</span>
+                    </div>
                 </div>
             </div>
         </div>

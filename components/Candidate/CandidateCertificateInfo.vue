@@ -13,27 +13,27 @@ defineProps({
         <div class="space-y-3">
             <div class="flex">
                 <span class="w-1/3 font-semibold">Certificate ID:</span>
-                <span>{{ candidate.certificateId }}</span>
+                <span>{{ candidate.certificateId || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Certificate No:</span>
-                <span>{{ candidate.certificateNo }}</span>
+                <span>{{ candidate.certificateNo || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Status:</span>
-                <span>{{ candidate.certificateStatusId }}</span>
+                <span>{{ candidate.certificateStatusId || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Issued By:</span>
-                <span>{{ candidate.certificateIssued }}</span>
+                <span>{{ candidate.certificateIssued || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Issue Date:</span>
-                <span>{{ new Date(candidate.certificateIssuedDate).toLocaleDateString() }}</span>
+                <span>{{ candidate.certificateIssuedDate ? new Date(candidate.certificateIssuedDate).toLocaleDateString() : '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Expiry Date:</span>
-                <span>{{ new Date(candidate.certificateExpiryDate).toLocaleDateString() }}</span>
+                <span>{{ candidate.certificateExpiryDate ? new Date(candidate.certificateExpiryDate).toLocaleDateString() : '-' }}</span>
             </div>
             <div v-if="candidate.certificateDoc?.url" class="flex">
                 <span class="w-1/3 font-semibold">Document:</span>
