@@ -52,7 +52,7 @@ console.log("DOCUMENTS", props.documents);
                             <td class="border p-2">{{ formatDate(doc.expired_date) }}</td>
                             <td class="border p-2">{{ doc.remark || '-' }}</td>
                             <td class="border p-2">
-                                <a v-if="doc.file_path" :href="doc.file_path" target="_blank" class="text-primary hover:underline">
+                                <a v-if="doc.file_url" :href="doc.file_url" target="_blank" class="text-primary hover:underline">
                                     View
                                 </a>
                                 <span v-else>-</span>

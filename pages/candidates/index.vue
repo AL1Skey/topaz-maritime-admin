@@ -89,9 +89,9 @@ onMounted(async () => {
     await fetchCandidateByJobCategory(route.params.id);
   } else {
     // If no ID is provided, show all applications
-    selectedCategoryId.value = "";
-    jobCategory.value = { name: "All Categories", id: "" };
-    await fetchCandidate();
+    handleCategoryChange({
+      target: { value: "ALL" },
+    });
   }
 
   appStore.loadingEnd();

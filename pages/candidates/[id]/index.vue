@@ -95,7 +95,7 @@ const updateStatus = async (status) => {
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-4">
                 <button @click="goBack" class="btn btn-outline-primary">
-                    <icon-arrow-left class="h-5 w-5 mr-2" />
+                    <icon-arrow-backward class="h-5 w-5 mr-2" />
                     Back
                 </button>
                 <h1 class="text-2xl font-bold">Candidate Details</h1>
