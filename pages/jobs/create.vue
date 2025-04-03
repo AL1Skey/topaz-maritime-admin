@@ -26,11 +26,36 @@ const companyStore = useCompanyStore()
 const { loading, message, errors } = storeToRefs(jobStore)
 const { createJob } = jobStore
 
-const { jobCategories } = storeToRefs(jobCategoryStore)
+// const { jobCategories } = storeToRefs(jobCategoryStore)
 const { fetchJobCategories } = jobCategoryStore
 
 // const { companies } = storeToRefs(companyStore)
 // const { fetchCompanies } = companyStore
+const jobCategories = ref([
+    { id: 2110, name: 'MASTER' },
+    { id: 2120, name: 'CHIEF OFFICER' },
+    { id: 2130, name: 'SECOND OFFICER' },
+    { id: 2140, name: 'THIRD OFFICER' },
+    { id: 2150, name: 'SENIOR DECK CADET' },
+    { id: 2210, name: 'CHIEF ENGINEER' },
+    { id: 2220, name: 'SECOND ENGINEER' },
+    { id: 2230, name: 'THIRD ENGINEER' },
+    { id: 2240, name: 'FOURTH ENGINEER' },
+    { id: 2250, name: 'SENIOR ENGINE CADET' },
+    { id: 2260, name: 'ELECTRICIAN' },
+    { id: 2300, name: 'PUMPMAN' },
+    { id: 2320, name: 'Q/MASTER' },
+    { id: 2330, name: 'SAILOR' },
+    { id: 2340, name: 'BOSUN' },
+    { id: 2420, name: 'OILER' },
+    { id: 2430, name: 'WIPER' },
+    { id: 2440, name: 'FITTER' },
+    { id: 2510, name: 'CHIEF COOK' },
+    { id: 2530, name: 'MESS BOY' },
+    { id: 2560, name: 'CADET TEHNIK' },
+    { id: 2570, name: 'CADET NAUTIC' },
+    { id: 2580, name: 'CADET ELECTRICIAN' },
+])
 
 const formData = reactive({
     title: '',

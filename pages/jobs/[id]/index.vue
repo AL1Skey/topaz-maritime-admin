@@ -16,6 +16,8 @@ const jobStore = useJobStore()
 const { job, loading, message, errors } = storeToRefs(jobStore)
 const { fetchJob } = jobStore
 
+
+
 const quillOptions = ref({
     modules: {
         toolbar: [],
@@ -57,7 +59,7 @@ onMounted(async () => {
                     </div>
                     <div class="flex flex-col sm:flex-row">
                         <label for="title" class="mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Job Category</label>
-                        <p id="title">{{ job?.job_category.name }}</p>
+                        <p id="title">{{ job?.job_category?.name }}</p>
                     </div>
                     <!-- <div class="flex flex-col sm:flex-row">
                         <label for="title" class="mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Company</label>

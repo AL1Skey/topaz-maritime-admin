@@ -19,13 +19,13 @@ defineProps({
                 <span class="w-1/3 font-semibold">Weight:</span>
                 <span>{{ candidate.weight || '-' }}</span>
             </div>
-            <div class="flex">
+            <!-- <div class="flex">
                 <span class="w-1/3 font-semibold">White Shirt:</span>
-                <span>{{ candidate.whiteShirt || '-' }}</span>
+                <span>{{ candidate.white_shirt || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Blue Pants:</span>
-                <span>{{ candidate.bluePants || '-' }}</span>
+                <span>{{ candidate.blue_pants || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Overall:</span>
@@ -33,12 +33,12 @@ defineProps({
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Safety Shoes:</span>
-                <span>{{ candidate.safetyShoes || '-' }}</span>
+                <span>{{ candidate.safety_shoes || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Winter Jacket:</span>
-                <span>{{ candidate.winterJacket || '-' }}</span>
-            </div>
+                <span>{{ candidate.winter_jacket || '-' }}</span>
+            </div> -->
         </div>
     </div>
 </template>

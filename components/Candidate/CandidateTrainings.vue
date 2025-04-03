@@ -1,25 +1,20 @@
 <script setup>
-defineProps({
-    standardTrainings: {
-        type: Array,
-        default: () => []
-    },
-    stcwTrainings: {
+const { trainings } = defineProps({
+    trainings: {
         type: Array,
         default: () => []
     }
 });
 
 // Helper function to format date or return placeholder
-const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString();
+const format_date = (date_string) => {
+    if (!date_string) return '-';
+    return new Date(date_string).toLocaleDateString();
 };
-
-// Check if a training has any data
-const hasTrainingData = (training) => {
-    return training.qualificationNo || training.issuedDate || training.expiredDate;
-};
+trainings.forEach(element => {
+    console.log("Trainings:", element.training_id);
+    
+});
 </script>
 
 <template>
@@ -41,15 +36,15 @@ const hasTrainingData = (training) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(training, index) in standardTrainings" :key="index" 
-                            :class="{'bg-gray-100 dark:bg-gray-700': !hasTrainingData(training)}">
-                            <td class="border p-2">{{ training.trainingType }}</td>
+                        <tr v-for="(training, index) in trainings" :key="index" 
+                            class='bg-gray-100 dark:bg-gray-700'>
+                            <td class="border p-2">{{ training.training_id }}</td>
                             <td class="border p-2">{{ training.name }}</td>
-                            <td class="border p-2">{{ training.qualificationNo || '-' }}</td>
-                            <td class="border p-2">{{ formatDate(training.issuedDate) }}</td>
-                            <td class="border p-2">{{ formatDate(training.expiredDate) }}</td>
+                            <td class="border p-2">{{ training.certificate_no || '-' }}</td>
+                            <td class="border p-2">{{ format_date(training.issued_date) }}</td>
+                            <td class="border p-2">{{ format_date(training.expired_date) }}</td>
                         </tr>
-                        <tr v-if="!standardTrainings || standardTrainings.length === 0">
+                        <tr v-if="!trainings || trainings.length === 0">
                             <td colspan="5" class="border p-2 text-center">No standard trainings available</td>
                         </tr>
                     </tbody>
@@ -58,7 +53,7 @@ const hasTrainingData = (training) => {
         </div>
         
         <!-- STCW Trainings -->
-        <div>
+        <!-- <div>
             <h6 class="mb-2 font-medium">STCW Trainings</h6>
             <div class="overflow-x-auto">
                 <table class="w-full table-auto">
@@ -71,12 +66,12 @@ const hasTrainingData = (training) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(training, index) in stcwTrainings" :key="index"
-                            :class="{'bg-gray-100 dark:bg-gray-700': !hasTrainingData(training)}">
-                            <td class="border p-2">{{ training.trainingType }}</td>
-                            <td class="border p-2">{{ training.qualificationNo || '-' }}</td>
-                            <td class="border p-2">{{ formatDate(training.issuedDate) }}</td>
-                            <td class="border p-2">{{ formatDate(training.expiredDate) }}</td>
+                        <tr v-if="stcw_trainings" v-for="(training, index) in stcwTrainings.value" :key="index"
+                            :class="{'bg-gray-100 dark:bg-gray-700': !has_training_data(training)}">
+                            <td class="border p-2">{{ training.training_type }}</td>
+                            <td class="border p-2">{{ training.qualification_no || '-' }}</td>
+                            <td class="border p-2">{{ format_date(training.issued_date) }}</td>
+                            <td class="border p-2">{{ format_date(training.expired_date) }}</td>
                         </tr>
                         <tr v-if="!stcwTrainings || stcwTrainings.length === 0">
                             <td colspan="4" class="border p-2 text-center">No STCW trainings available</td>
@@ -84,6 +79,6 @@ const hasTrainingData = (training) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>

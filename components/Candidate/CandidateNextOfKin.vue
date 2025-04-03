@@ -13,23 +13,23 @@ defineProps({
         <div class="space-y-3">
             <div class="flex">
                 <span class="w-1/3 font-semibold">Name:</span>
-                <span>{{ candidate.nextOfKinName || '-' }}</span>
+                <span>{{ candidate.next_of_kin_name || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Address:</span>
-                <span class="whitespace-pre-line">{{ candidate.nextOfKinAddress || '-' }}</span>
+                <span class="whitespace-pre-line">{{ candidate.next_of_kin_address || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">City:</span>
-                <span>{{ candidate.nextOfKinCity || '-' }}</span>
+                <span>{{ candidate.next_of_kin_city || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Zip Code:</span>
-                <span>{{ candidate.nextOfKinZipCode || '-' }}</span>
+                <span>{{ candidate.next_of_kin_zip_code || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Phone:</span>
-                <span>{{ candidate.nextOfKinPhone || '-' }}</span>
+                <span>{{ candidate.next_of_kin_phone || '-' }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Relationship:</span>

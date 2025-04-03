@@ -21,19 +21,19 @@ defineProps({
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Zip Code:</span>
-                <span>{{ candidate.zipCode }}</span>
+                <span>{{ candidate.zip_code }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Country:</span>
-                <span>{{ candidate.countryId }}</span>
+                <span>{{ candidate.country_name }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Phone:</span>
-                <span>{{ candidate.phoneNo }}</span>
+                <span>{{ candidate.phone_no }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Mobile:</span>
-                <span>{{ candidate.handPhone }}</span>
+                <span>{{ candidate.hand_phone }}</span>
             </div>
             <div class="flex">
                 <span class="w-1/3 font-semibold">Email:</span>

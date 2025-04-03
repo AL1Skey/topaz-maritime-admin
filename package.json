@@ -2,11 +2,12 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "nuxt build",
-        "dev": "nuxt dev",
-        "generate": "nuxt generate",
+        "build": "clean && nuxt build",
+        "dev": "(npm run clean && nuxt dev) || (npm run clean || nuxt dev)",
+        "generate": "(npm run clean && nuxt generate) || (npm run clean || nuxt generate)",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
+        "postinstall": "nuxt prepare",
+        "clean": "rmdir /s /q .nuxt"
     },
     "devDependencies": {
         "@nuxtjs/i18n": "^8.0.0-beta.9",

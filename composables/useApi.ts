@@ -3,8 +3,8 @@ import { $info } from '@/info'
 import { useUserStore } from '@/stores/user';
 
 const api = $fetch.create({
-    // baseURL: $info.baseApiUrl,
-    baseURL: 'http://localhost:8000',
+    baseURL: $info.baseApiUrl,
+    // baseURL: 'http://localhost:8000',
 
     onRequest({ request, options, response }) {
         const userStore = useUserStore()
@@ -16,9 +16,9 @@ const api = $fetch.create({
         }
     },
     onResponseError({ request, options, response }) {
-        // console.log("🚀 | onResponseError | request:", request)
-        // console.log("🚀 | onResponseError | options:", options)
-        // console.log("🚀 | onResponseError | response:", response)
+        console.log("🚀 | onResponseError | request:", request)
+        console.log("🚀 | onResponseError | options:", options)
+        console.log("🚀 | onResponseError | response:", response)
         const userStore = useUserStore()
         if (response.status === 401 && userStore.token) {
             localStorage.removeItem('token')

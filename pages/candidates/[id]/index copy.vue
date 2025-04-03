@@ -13,29 +13,19 @@ const jobApplicationStore = useJobApplicationStore();
 
 const { loading,jobApplication } = storeToRefs(jobApplicationStore);
 const candidate = ref(null);
-const documents = ref(null);
-const experiences = ref(null);
-const standardTrainings = ref(null);
-const stcwTrainings = ref(null);
-const { approveCandidate, rejectCandidate } = jobApplicationStore;
 
 onMounted(async () => {
     appStore.loadingStart();
     try {
         // Fetch candidate details
-        const data = await jobApplicationStore.fetchCandidateDetail(route.params.id);
-        candidate.value = jobApplication.value.candidate;
-        documents.value = jobApplication.value.documents;
-        experiences.value = jobApplication.value.experiences;
-        standardTrainings.value = jobApplication.value.trainings;
-        stcwTrainings.value = jobApplication.value.stcwTrainings;
-        console.log("CANDIDATE", candidate.value);
+        const data = await jobApplicationStore.fetchJobApplication(route.params.id);
+        candidate.value = jobApplication.value;
     } catch (error) {
         console.error('Error fetching candidate details:', error);
-        // appStore.showMessage({
-        //     type: 'error',
-        //     message: 'Failed to load candidate details'
-        // });
+        appStore.showMessage({
+            type: 'error',
+            message: 'Failed to load candidate details'
+        });
     } finally {
         appStore.loadingEnd();
     }
@@ -45,12 +35,7 @@ onMounted(async () => {
 const downloadExcel = () => {
     if (!candidate.value) return;
     
-    downloadCandidateExcel({
-        ...candidate.value,
-        documents: documents.value,
-        experiences: experiences.value,
-        trainings: standardTrainings.value,
-    });
+    downloadCandidateExcel(candidate.value);
 };
 
 // Function to go back to job category page
@@ -62,28 +47,26 @@ const goBack = () => {
 const updateStatus = async (status) => {
     try {
         appStore.loadingStart();
-        console.log("START", candidate.value);
-        if (status === 'Accepted') {
-            await approveCandidate(candidate.value.candidate_id);
-        } else {
-            await rejectCandidate(candidate.value.candidate_id);
-        }
         
+        await jobApplicationStore.updateApplicationStatus(
+            candidate.value.id, 
+            status
+        );
         
         // Update local candidate data
         candidate.value.status = status;
         
         // Show success message
-        // appStore.showMessage({
-        //     type: 'success',
-        //     message: `Candidate ${status.toLowerCase()} successfully`
-        // });
+        appStore.showMessage({
+            type: 'success',
+            message: `Candidate ${status.toLowerCase()} successfully`
+        });
     } catch (error) {
         console.error('Error updating status:', error);
-        // appStore.showMessage({
-        //     type: 'error',
-        //     message: `Failed to update status: ${error.message}`
-        // });
+        appStore.showMessage({
+            type: 'error',
+            message: `Failed to update status: ${error.message}`
+        });
     } finally {
         appStore.loadingEnd();
     }
@@ -106,7 +89,7 @@ const updateStatus = async (status) => {
                     type="button" 
                     class="btn btn-success"
                     @click="updateStatus('Accepted')"
-                    :disabled="candidate?.status?.toLowerCase() === 'Accepted'.toLowerCase()"
+                    :disabled="candidate?.status === 'Accepted'"
                 >
                     <icon-check class="mr-2" />
                     Accept
@@ -115,7 +98,7 @@ const updateStatus = async (status) => {
                     type="button" 
                     class="btn btn-danger"
                     @click="updateStatus('Rejected')"
-                    :disabled="candidate?.status?.toLowerCase() === 'Rejected'.toLowerCase()"
+                    :disabled="candidate?.status === 'Rejected'"
                 >
                     <icon-x class="mr-2" />
                     Reject
@@ -143,15 +126,15 @@ const updateStatus = async (status) => {
                 <CandidateContactInfo :candidate="candidate" />
                 <CandidateNextOfKin :candidate="candidate" />
                 <CandidatePhysicalInfo :candidate="candidate" />
-                <!-- <CandidateCertificateInfo :candidate="candidate" /> -->
+                <CandidateCertificateInfo :candidate="candidate" />
             </div>
 
-            <CandidateDocumentsInfo :documents="documents" />
+            <CandidateDocumentsInfo :candidate="candidate" />
             <CandidateTrainings 
-                :trainings="standardTrainings" 
-           
+                :standard-trainings="candidate.standardTrainings" 
+                :stcw-trainings="candidate.stcwTrainings" 
             />
-            <CandidateExperiences :experiences="experiences" />
+            <CandidateExperiences :experiences="candidate.experiences" />
         </template>
 
         <div v-else-if="!loading" class="panel p-6 text-center">

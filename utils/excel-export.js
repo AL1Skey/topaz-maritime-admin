@@ -84,20 +84,20 @@ export const downloadCandidateExcel = (candidate) => {
         'ID': candidate.id,
         'Name': candidate.name,
         'Email': candidate.email,
-        'Phone': candidate.phoneNo,
-        'Mobile': candidate.handPhone,
-        'Birth Place': candidate.birthPlace,
-        'Birth Date': candidate.birthDate ? new Date(candidate.birthDate).toLocaleDateString() : '',
+        'Phone': candidate.phone_no,
+        'Mobile': candidate.phone_no,
+        'Birth Place': candidate.birth_place,
+        'Birth Date': candidate.birth_date ? new Date(candidate.birth_date).toLocaleDateString() : '',
         'Gender': candidate.sex ? 'Male' : 'Female',
-        'Marital Status': candidate.maritalStatusId,
-        'Children': candidate.numberOfChild,
-        'Religion': candidate.religionId,
-        'Blood Type': candidate.bloodType,
-        'Nationality': candidate.nationalityId,
+        'Marital Status': candidate.marital_status_name,
+        'Children': candidate.number_of_child,
+        'Religion': candidate.religion_name,
+        'Blood Type': candidate.blood_type,
+        'Nationality': candidate.nationality_name,
         'Address': candidate.address,
         'City': candidate.city,
-        'Zip Code': candidate.zipCode,
-        'Country': candidate.countryId,
+        'Zip Code': candidate.zip_code,
+        'Country': candidate.country_name,
         'Status': candidate.status || 'Pending'
     }];
     
@@ -108,11 +108,11 @@ export const downloadCandidateExcel = (candidate) => {
     const physicalInfo = [{
         'Height': candidate.height,
         'Weight': candidate.weight,
-        'White Shirt': candidate.whiteShirt,
-        'Blue Pants': candidate.bluePants,
+        'White Shirt': candidate.white_shirt,
+        'Blue Pants': candidate.blue_pants,
         'Overall': candidate.overall,
-        'Safety Shoes': candidate.safetyShoes,
-        'Winter Jacket': candidate.winterJacket
+        'Safety Shoes': candidate.safety_shoes,
+        'Winter Jacket': candidate.winter_jacket
     }];
     
     const physicalSheet = XLSX.utils.json_to_sheet(physicalInfo);
@@ -120,14 +120,14 @@ export const downloadCandidateExcel = (candidate) => {
     
     // Certificate Info Sheet
     const certificateInfo = [{
-        'Certificate ID': candidate.certificateId,
-        'Certificate No': candidate.certificateNo,
-        'Certificate Status': candidate.certificateStatusId,
-        'Certificate Issued By': candidate.certificateIssued,
-        'Certificate Issue Date': candidate.certificateIssuedDate ? new Date(candidate.certificateIssuedDate).toLocaleDateString() : '',
-        'Certificate Expiry Date': candidate.certificateExpiryDate ? new Date(candidate.certificateExpiryDate).toLocaleDateString() : '',
-        'Rank to Apply': candidate.rankToApply,
-        'Apply Date': candidate.rankApplyDate ? new Date(candidate.rankApplyDate).toLocaleDateString() : ''
+        'Certificate ID': candidate.certificate_id,
+        'Certificate No': candidate.certificate_no,
+        'Certificate Status': candidate.certificate_status_id,
+        'Certificate Issued By': candidate.certificate_issued,
+        'Certificate Issue Date': candidate.certificate_issued_date ? new Date(candidate.certificate_issued_date).toLocaleDateString() : '',
+        'Certificate Expiry Date': candidate.certificate_expiry_date ? new Date(candidate.certificate_expiry_date).toLocaleDateString() : '',
+        'Rank to Apply': candidate.rank_to_apply,
+        'Apply Date': candidate.rank_apply_date ? new Date(candidate.rank_apply_date).toLocaleDateString() : ''
     }];
     
     const certificateSheet = XLSX.utils.json_to_sheet(certificateInfo);
@@ -136,11 +136,11 @@ export const downloadCandidateExcel = (candidate) => {
     // Documents Sheet
     if (candidate.documents && candidate.documents.length > 0) {
         const documents = candidate.documents.map(doc => ({
-            'Document ID': doc.docId,
-            'Document No': doc.docNo,
+            'Document ID': doc.doc_id,
+            'Document No': doc.doc_no,
             'Issued By': doc.issued,
-            'Valid Date': doc.validDate ? new Date(doc.validDate).toLocaleDateString() : '',
-            'Expiry Date': doc.expiredDate ? new Date(doc.expiredDate).toLocaleDateString() : '',
+            'Valid Date': doc.valid_date ? new Date(doc.valid_date).toLocaleDateString() : '',
+            'Expiry Date': doc.expired_date ? new Date(doc.expired_date).toLocaleDateString() : '',
             'Remark': doc.remark
         }));
         
@@ -151,11 +151,11 @@ export const downloadCandidateExcel = (candidate) => {
     // Trainings Sheet
     if (candidate.trainings && candidate.trainings.length > 0) {
         const trainings = candidate.trainings.map(training => ({
-            'Training ID': training.trainingId,
-            'Reference ID': training.referenceId,
-            'Certificate No': training.certificateNo,
-            'Valid Date': training.validDate ? new Date(training.validDate).toLocaleDateString() : '',
-            'Expiry Date': training.expiredDate ? new Date(training.expiredDate).toLocaleDateString() : ''
+            'Training ID': training.training_id,
+            'Reference ID': training.reference_id,
+            'Certificate No': training.certificate_no,
+            'Valid Date': training.valid_date ? new Date(training.valid_date).toLocaleDateString() : '',
+            'Expiry Date': training.expired_date ? new Date(training.expired_date).toLocaleDateString() : ''
         }));
         
         const trainingsSheet = XLSX.utils.json_to_sheet(trainings);
@@ -166,16 +166,16 @@ export const downloadCandidateExcel = (candidate) => {
     if (candidate.experiences && candidate.experiences.length > 0) {
         const experiences = candidate.experiences.map(exp => ({
             'Vessel': exp.vessel,
-            'Vessel Type': exp.vesselType,
+            'Vessel Type': exp.vessel_type,
             'Flag': exp.flag,
-            'Trading Area': exp.tradingAreaId,
+            'Trading Area': exp.trading_area_id,
             'Rank': exp.rank,
             'DWT': exp.dwt,
             'KWH': exp.kwh,
             'Owner': exp.owner,
-            'Sign On': exp.signOn ? new Date(exp.signOn).toLocaleDateString() : '',
-            'Sign Off': exp.signOff ? new Date(exp.signOff).toLocaleDateString() : '',
-            'Reason': exp.signOffReason
+            'Sign On': exp.sign_on ? new Date(exp.sign_on).toLocaleDateString() : '',
+            'Sign Off': exp.sign_off ? new Date(exp.sign_off).toLocaleDateString() : '',
+            'Reason': exp.sign_off_reason
         }));
         
         const experiencesSheet = XLSX.utils.json_to_sheet(experiences);

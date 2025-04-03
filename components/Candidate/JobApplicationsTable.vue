@@ -41,6 +41,10 @@ const changeStatus = (application, type) => {
 const deleteApplication = (application) => {
     emit('delete', application);
 };
+onMounted(() => {
+    console.log('applications', props.applications);
+});
+// console.log('applications', applications);
 </script>
 
 <template>
@@ -58,7 +62,7 @@ const deleteApplication = (application) => {
         skin="whitespace-nowrap bh-table-hover"
     >
         <template #id="data">
-            <strong class="text-info">#{{ data.value.id }}</strong>
+            <strong class="text-info">#{{ data.value.candidate_id }}</strong>
         </template>
         <template #name="data">
             <div class="font-semibold">{{ data.value.name }}</div>
@@ -67,19 +71,19 @@ const deleteApplication = (application) => {
             <div class="font-semibold">{{ data.value.email }}</div>
         </template>
         <template #phone="data">
-            <div class="font-semibold">{{ data.value.phone }}</div>
+            <div class="font-semibold">{{ data.value.phone_no }}</div>
         </template>
         <template #job="data">
-            <div class="font-semibold">{{ data.value?.job_vacancy?.title || 'N/A' }}</div>
+            <div class="font-semibold">{{ data.value?.rank_to_apply_name || 'N/A' }}</div>
         </template>
         <template #status="data">
             <div class="flex items-center justify-center">
                 <span 
                     class="badge whitespace-nowrap" 
                     :class="{
-                        'badge-outline-success': data.value.status === 'Accepted',
-                        'badge-outline-danger': data.value.status === 'Rejected',
-                        'badge-outline-warning': !data.value.status || data.value.status === 'Pending'
+                        'badge-outline-success': data.value.status.toUpperCase() === 'Accepted'.toUpperCase(),
+                        'badge-outline-danger': data.value.status.toUpperCase() === 'Rejected'.toUpperCase(),
+                        'badge-outline-warning': !data.value.status || data.value.status === 'Pending'.toUpperCase()
                     }"
                 >
                     {{ data.value.status || 'Pending' }}
@@ -98,7 +102,7 @@ const deleteApplication = (application) => {
                     type="button" 
                     class="btn btn-sm btn-success p-1" 
                     @click="changeStatus(data.value, 'accept')"
-                    :disabled="data.value.status === 'Accepted'"
+                    :disabled="data.value.status === 'ACCEPTED'"
                 >
                     <icon-checks class="h-4 w-4" />
                 </button>
