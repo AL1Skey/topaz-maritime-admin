@@ -183,14 +183,8 @@ const changeServer = async (data) => {
 
 const confirmDelete = async () => {
   await deleteCandidate(jobApplication.value?.candidate_id);
-  if (selectedCategoryId.value === "") {
-    await fetchCandidate(jobApplicationParams);
-  } else {
-    await fetchCandidateByJobCategory(
-      selectedCategoryId.value,
-      jobApplicationParams
-    );
-  }
+  await fetchCandidate(jobApplicationParams);
+  
 };
 
 // Function to download job applications as Excel

@@ -11,10 +11,10 @@ console.log("CANDIDATE", props.candidate.name);
 <template>
     <div class="panel" v-if="candidate">
         <div class="flex flex-col md:flex-row gap-6">
-            <!-- <div class="md:w-1/4 flex flex-col items-center">
+            <div class="md:w-1/4 flex flex-col items-center">
                 <div class="w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-primary">
                     <img 
-                        :src="props.candidate.photo?.url || '/assets/images/user-profile.png'" 
+                        :src="props.candidate.photo_url || '/assets/images/user-profile.png'" 
                         alt="Candidate Photo"
                         class="w-full h-full object-cover"
                     />
@@ -35,7 +35,7 @@ console.log("CANDIDATE", props.candidate.name);
                         </span>
                     </div>
                 </div>
-            </div> -->
+            </div>
             
             <div class="md:w-3/4">
                 <h6 class="mb-4 text-base font-semibold">Personal Information</h6>
@@ -88,14 +88,31 @@ console.log("CANDIDATE", props.candidate.name);
                         <span class="w-1/3 font-semibold">Elementary:</span>
                         <span>{{ props.candidate.isElementary ? 'Yes' : 'No' }}</span>
                     </div>
-                    <div class="flex">
+                    <!-- <div class="flex">
                         <span class="w-1/3 font-semibold">Rank:</span>
                         <span>{{ props.candidate.rank }}</span>
-                    </div>
+                    </div> -->
                     <div class="flex">
                         <span class="w-1/3 font-semibold">COC Type:</span>
                         <span>{{ props.candidate.coc_type }}</span>
                     </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Winter Jacket Size:</span>
+                        <span>{{ props.candidate.winter_jacket }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Safety Shoes Size:</span>
+                        <span>{{ props.candidate.safety_shoes }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Overal Size:</span>
+                        <span>{{ props.candidate.overall }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-1/3 font-semibold">Blue Pants Size:</span>
+                        <span>{{ props.candidate.blue_pants }}</span>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -41,7 +41,7 @@ trainings.forEach(element => {
                             <td class="border p-2">{{ training.training_id }}</td>
                             <td class="border p-2">{{ training.name }}</td>
                             <td class="border p-2">{{ training.certificate_no || '-' }}</td>
-                            <td class="border p-2">{{ format_date(training.issued_date) }}</td>
+                            <td class="border p-2">{{ format_date(training.valid_date) }}</td>
                             <td class="border p-2">{{ format_date(training.expired_date) }}</td>
                         </tr>
                         <tr v-if="!trainings || trainings.length === 0">

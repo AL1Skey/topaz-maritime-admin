@@ -35,8 +35,8 @@ console.log("DOCUMENTS", props.documents);
                     <thead>
                         <tr>
                             <th class="border p-2">Document ID</th>
-                            <th class="border p-2">Document No</th>
-                            <th class="border p-2">Issued By</th>
+                            <th class="border p-2">Document Number</th>
+                            <th class="border p-2">Place of Issued</th>
                             <th class="border p-2">Valid Date</th>
                             <th class="border p-2">Expiry Date</th>
                             <th class="border p-2">Remark</th>
